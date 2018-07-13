@@ -100,17 +100,13 @@ def play_srs_serial(srs_serial):
         else:
             time.sleep(0.2)
 
-            
-
-            
-            
 #print(srs_dict)
 
 haiku = "Your gentle kisses and other feral blisses haunt my memory"
 
 #x = translate("hello how are you")
-#y = translate("what is your name")
+y = translate("what is your name")
 #print((x, srs_to_serial(x)))
-#print((y, srs_to_serial(y)))
+print((y, srs_to_serial(y)))
 
 print(translate(haiku))

@@ -162,7 +162,7 @@ Fadosol	To sign, signature
 Fadola	Stamp, seal
 Fadosi	End, complete, finish, final, finally, termination, achieve
 Faredo	Contact, address, send a letter
-Faremi	Be, exist (auxiliary)
+Faremi	Be, exist (auxiliary), is, are
 Farefa	Go, proceed 
 Faresol	Lengthen, extend, extension, elongation
 Farela	Mail, post, post office
