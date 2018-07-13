@@ -1,19 +1,20 @@
-import winsound
+
+import os
 import time
-import requests
+from thesaurus import Word
+
+if os.name == "nt":
+    import winsound
+    windows = True
+else:
+    windows = False
 
 
 srs_dict = {}
 
 def get_synonyms(word):
-    url_base = "http://www.stands4.com/services/v2/syno.php"
-    params = {
-        "uid" : "wack"
-        "tokenid" : "waack"
-        "word" : word
-    }
-    response = requests.get(url_base, params=params)
-    print(response.contents)
+    my_word = Word(word)
+    return my_word.synonyms()
 
 def clean(word):
     word = word.strip()
@@ -32,10 +33,24 @@ def translate(sentence):
     words = sentence.split(' ')
     acc = ""
     for i in range(len(words)):
-        word = words[i]
+
+        word = clean(words[i])
         words[i] = srs_dict.get(word, "")
-        if words[i] == "":
-            print("dropping from sentence \"{}\" : {}".format(sentence, word))
+
+        if not words[i] == "":
+            pass
+        else:
+            synonyms = get_synonyms(word)
+            syn = 0
+            while words[i] == "" and syn < len(synonyms):
+                words[i] = srs_dict.get(synonyms[syn], "")
+                print synonyms[syn]
+                syn += 1
+            if words[i] == "":
+                print("dropping from sentence \"{}\" : {}".format(sentence, word))
+            else:
+                print("substituted \"{}\" for \"{}\"".format(word, synonyms[syn-1]))
+
     return " ".join([x for x in words if x != ""])
    
 def srs_tone_to_int(srs):
@@ -66,6 +81,9 @@ def srs_to_serial(sentence):
     return ser_acc
 
 def play_srs_serial(srs_serial):
+    if not windows:
+        print("Can't play on {}".format(os.name))
+        return
     srs_frq = {
         1 : 261, #do, C
         2 : 293, #re
@@ -88,11 +106,11 @@ def play_srs_serial(srs_serial):
             
 #print(srs_dict)
 
-haiku = "Your gentle kiss and other feral bliss haunt my recollection"
+haiku = "Your gentle kisses and other feral blisses haunt my memory"
 
-x = translate("hello how are you")
-y = translate("what is your name")
+#x = translate("hello how are you")
+#y = translate("what is your name")
 #print((x, srs_to_serial(x)))
 #print((y, srs_to_serial(y)))
 
-play_srs_serial(srs_to_serial(translate(haiku)))
+print(translate(haiku))

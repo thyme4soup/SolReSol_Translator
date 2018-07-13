@@ -6,7 +6,7 @@ Sol	If
 La	The
 Si	Yes, willingly
 Dore	I, me, myself, personally, we, ourselves
-Domi	You, yourself, (singular or plural)
+Domi	You, yourself, (singular or plural), your
 Dofa	He, she, it, him, her, them, they
 Dosol	Self, oneself
 Dola	One, someone, another person
