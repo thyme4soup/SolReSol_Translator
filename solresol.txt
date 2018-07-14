@@ -505,7 +505,7 @@ Dosifala	Tea, teapot
 Dosifasi	Sweeten, sugar, candy
 Dosisoldo	Chocolate, cocoa
 Dosisolre	Uselessness, redundancy, superfluous, useless, in vain
-Dosisolmi	Meal, feast, banquet, lunch, dinner, supper
+Dosisolmi	Meal, feast, banquet, lunch, dinner, supper, breakfast
 Dosisolfa	Cook, cooking, kitchen, of the kitchen
 Dosisolla	Provide, supply, fill, supplies, provisions, provider
 Dosisolsi	Food, edible
