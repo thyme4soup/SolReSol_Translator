@@ -44,7 +44,6 @@ def translate(sentence):
             syn = 0
             while words[i] == "" and syn < len(synonyms):
                 words[i] = srs_dict.get(synonyms[syn], "")
-                print synonyms[syn]
                 syn += 1
             if words[i] == "":
                 print("dropping from sentence \"{}\" : {}".format(sentence, word))
