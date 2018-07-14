@@ -7,6 +7,7 @@ if os.name == "nt":
     import winsound
     windows = True
 else:
+    from pysine import sine
     windows = False
 
 
@@ -48,7 +49,7 @@ def translate(sentence):
             if words[i] == "":
                 print("dropping from sentence \"{}\" : {}".format(sentence, word))
             else:
-                print("substituted \"{}\" for \"{}\"".format(word, synonyms[syn-1]))
+                print("substituted \"{}\" for \"{}\"".format(synonyms[syn-1], word))
 
     return " ".join([x for x in words if x != ""])
    
@@ -80,9 +81,7 @@ def srs_to_serial(sentence):
     return ser_acc
 
 def play_srs_serial(srs_serial):
-    if not windows:
-        print("Can't play on {}".format(os.name))
-        return
+
     srs_frq = {
         1 : 261, #do, C
         2 : 293, #re
@@ -92,20 +91,29 @@ def play_srs_serial(srs_serial):
         6: 440, #la
         7: 466 #si
     }
-    for tone_num in srs_serial:
-        frq = srs_frq.get(tone_num, None)
-        if frq != None:
-            winsound.Beep(frq, 200)
-        else:
-            time.sleep(0.2)
 
-#print(srs_dict)
+    if windows:
+        for tone_num in srs_serial:
+            frq = srs_frq.get(tone_num, None)
+            if frq != None:
+                winsound.Beep(frq, 200)
+            else:
+                time.sleep(0.2)
+    else:
+        for tone_num in srs_serial:
+            frq = srs_frq.get(tone_num, None)
+            if frq != None:
+                sine(frequency = frq, duration = 0.2)
+            else:
+                time.sleep(0.2)
+
+def play_from_sentence(sentence):
+    play_srs_serial(srs_to_serial(translate(sentence)))
+
+
+############
 
 haiku = "Your gentle kisses and other feral blisses haunt my memory"
+play_from_sentence(haiku)
 
-#x = translate("hello how are you")
-y = translate("what is your name")
-#print((x, srs_to_serial(x)))
-print((y, srs_to_serial(y)))
-
-print(translate(haiku))
+############
