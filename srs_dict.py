@@ -10,7 +10,6 @@ else:
     from pysine import sine
     windows = False
 
-
 srs_dict = {}
 
 def get_synonyms(word):
@@ -80,7 +79,7 @@ def srs_to_serial(sentence):
         print("potential error in translation of {}".format(sentence))
     return ser_acc
 
-def play_srs_serial(srs_serial):
+def play_srs_serial(srs_serial, tone_time=0.2):
 
     srs_frq = {
         1 : 261, #do, C
@@ -96,25 +95,33 @@ def play_srs_serial(srs_serial):
         for tone_num in srs_serial:
             frq = srs_frq.get(tone_num, None)
             if frq != None:
-                winsound.Beep(frq, 200)
+                winsound.Beep(frq, tone_time * 1000)
             else:
-                time.sleep(0.2)
+                time.sleep(tone_time)
     else:
         for tone_num in srs_serial:
             frq = srs_frq.get(tone_num, None)
             if frq != None:
-                sine(frequency = frq, duration = 0.2)
+                sine(frequency = frq, duration = tone_time)
             else:
-                time.sleep(0.2)
+                time.sleep(tone_time)
 
-def play_from_sentence(sentence):
-    play_srs_serial(srs_to_serial(translate(sentence)))
+def play_from_sentence(sentence, tone_time=0.2):
+    play_srs_serial(srs_to_serial(translate(sentence)), tone_time=tone_time)
 
 
 ############
 
-haiku = "Your gentle kisses and other feral blisses haunt my memory"
-play_from_sentence(haiku)
+#haiku = "Your gentle kisses and other feral blisses haunt my memory"
+#print(haiku)
+#play_from_sentence(haiku, tone_time=0.15)
+
+play_from_sentence("hello world", tone_time=0.2)
+
+user_input = ""
+while user_input.lower() != "exit":
+    user_input = raw_input("Type a sentence, exit to leave\n")
+    play_from_sentence(user_input, 0.2)
 
 input = ""
 while input != "exit":

@@ -1,0 +1,7 @@
+
+############ Requirements for the SolReSol Translator ############
+
+thesaurus >= 0.2.2
+pysine >= 0.9.2
+
+# Note that pysine requires pyaudio, which may need to be installed with apt-get or brew
