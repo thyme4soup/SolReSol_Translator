@@ -116,4 +116,10 @@ def play_from_sentence(sentence):
 haiku = "Your gentle kisses and other feral blisses haunt my memory"
 play_from_sentence(haiku)
 
+input = ""
+while input != "exit":
+    input = input()
+    serial = srs_to_serial(translate(input))
+    play_from_sentence(input)
+
 ############
