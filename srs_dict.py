@@ -122,11 +122,6 @@ user_input = ""
 while user_input.lower() != "exit":
     user_input = raw_input("Type a sentence, exit to leave\n")
     play_from_sentence(user_input, 0.2)
-
-input = ""
-while input != "exit":
-    input = input()
     serial = srs_to_serial(translate(input))
-    play_from_sentence(input)
 
 ############
