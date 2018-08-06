@@ -2,6 +2,11 @@
 import os
 import time
 import warnings
+import sys
+import serial
+if sys.version_info[0] < 3:
+    raise Exception("Must be using Python 3")
+
 from thesaurus import Word
 
 if os.name == "nt":
@@ -10,13 +15,12 @@ if os.name == "nt":
 else:
     from pysine import sine
     windows = False
-    
-import serial
+
 from serial.tools import list_ports
 arduinos = [
     p.device
     for p in serial.tools.list_ports.comports()
-    if 'USB Serial Device' in p.description
+    if 'USB Serial Device' in p.description or 'Arduino' in p.description
 ]
 if len(arduinos) > 1:
     warnings.warn('Multiple Arduinos found - using the first')
@@ -37,7 +41,7 @@ def clean(word):
         acc += ch.lower()
     return acc
 
-with open("solresol.txt","r") as dict_file:
+with open("solresol.txt","r", encoding = "latin-1") as dict_file:
     for line in dict_file:
         srs, eng = line.split("\t")
         for word in eng.split(', '):
@@ -134,21 +138,25 @@ play_from_sentence("hello world", tone_time=0.2)
 
 ser = None
 if len(arduinos) > 0:
+    print("Using USB Device by description {}".format(arduinos[0].description))
     ser = serial.Serial(arduinos[0], 9600, timeout=1)
     ser.close()
+    ser.open()
+else:
+    print("Empty device list, will be playing over computer audio")
 
-ser.open()
-time.sleep(1);
+time.sleep(0.2);
 user_input = ""
 while user_input.lower() != "exit":
     user_input = input("Type a sentence, exit to leave\n")
-    play_from_sentence(user_input, 0.2)
     
     if ser:
         serialized_srs = srs_to_serial(translate(user_input))
         msg = ''.join(str(s) for s in serialized_srs)
         print("sending \"{}\"".format(msg))
         ser.write(msg.encode())
+    else:
+        play_from_sentence(user_input, 0.2)
     
     
 
