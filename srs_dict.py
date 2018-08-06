@@ -138,7 +138,7 @@ play_from_sentence("hello world", tone_time=0.2)
 
 ser = None
 if len(arduinos) > 0:
-    print("Using USB Device by description {}".format(arduinos[0].description))
+    print("Using USB Device by description {}".format(arduinos[0]))
     ser = serial.Serial(arduinos[0], 9600, timeout=1)
     ser.close()
     ser.open()
