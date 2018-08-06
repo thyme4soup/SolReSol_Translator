@@ -1,6 +1,7 @@
 
 import os
 import time
+import warnings
 from thesaurus import Word
 
 if os.name == "nt":
@@ -9,6 +10,19 @@ if os.name == "nt":
 else:
     from pysine import sine
     windows = False
+    
+import serial
+from serial.tools import list_ports
+arduinos = [
+    p.device
+    for p in serial.tools.list_ports.comports()
+    if 'USB Serial Device' in p.description
+]
+if len(arduinos) > 1:
+    warnings.warn('Multiple Arduinos found - using the first')
+elif len(arduinos) == 0:
+    warnings.warn('No Arduinos found')
+    
 
 srs_dict = {}
 
@@ -95,7 +109,7 @@ def play_srs_serial(srs_serial, tone_time=0.2):
         for tone_num in srs_serial:
             frq = srs_frq.get(tone_num, None)
             if frq != None:
-                winsound.Beep(frq, tone_time * 1000)
+                winsound.Beep(frq, int(tone_time * 1000))
             else:
                 time.sleep(tone_time)
     else:
@@ -118,10 +132,24 @@ def play_from_sentence(sentence, tone_time=0.2):
 
 play_from_sentence("hello world", tone_time=0.2)
 
+ser = None
+if len(arduinos) > 0:
+    ser = serial.Serial(arduinos[0], 9600, timeout=1)
+    ser.close()
+
+ser.open()
+time.sleep(1);
 user_input = ""
 while user_input.lower() != "exit":
-    user_input = raw_input("Type a sentence, exit to leave\n")
+    user_input = input("Type a sentence, exit to leave\n")
     play_from_sentence(user_input, 0.2)
-    serial = srs_to_serial(translate(input))
+    
+    if ser:
+        serialized_srs = srs_to_serial(translate(user_input))
+        msg = ''.join(str(s) for s in serialized_srs)
+        print("sending \"{}\"".format(msg))
+        ser.write(msg.encode())
+    
+    
 
 ############

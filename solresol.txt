@@ -1875,7 +1875,7 @@ Lalado	Dawn, twilight
 Lalare	Day, daylight, light
 Lalami	Meteorology, phenomenon, meteor
 Lalafa	Morning
-Lalasol	Evening, twilight
+Lalasol	Evening, twilight, night, tonight
 Lalasi	Night, by night
 Ladodo	Temperature, climate
 Larere	Fog, mist, foggy, misty
