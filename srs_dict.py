@@ -20,8 +20,10 @@ from serial.tools import list_ports
 arduinos = [
     p.device
     for p in serial.tools.list_ports.comports()
-    if 'USB Serial Device' in p.description or 'Arduino' in p.description
+    if 'USB Serial Device' in p.description or 'Arduino' in p.description or 'Circuit' in p.description
 ]
+
+
 if len(arduinos) > 1:
     warnings.warn('Multiple Arduinos found - using the first')
 elif len(arduinos) == 0:
@@ -47,7 +49,7 @@ with open("solresol.txt","r", encoding = "latin-1") as dict_file:
         for word in eng.split(', '):
             srs_dict[clean(word)] = srs.lower()
 
-def translate(sentence):
+def translate(sentence, verbose=True):
     words = sentence.split(' ')
     acc = ""
     for i in range(len(words)):
@@ -63,9 +65,9 @@ def translate(sentence):
             while words[i] == "" and syn < len(synonyms):
                 words[i] = srs_dict.get(synonyms[syn], "")
                 syn += 1
-            if words[i] == "":
+            if words[i] == "" and verbose:
                 print("dropping from sentence \"{}\" : {}".format(sentence, word))
-            else:
+            elif verbose:
                 print("substituted \"{}\" for \"{}\"".format(synonyms[syn-1], word))
 
     return " ".join([x for x in words if x != ""])
@@ -134,7 +136,7 @@ def play_from_sentence(sentence, tone_time=0.2):
 #print(haiku)
 #play_from_sentence(haiku, tone_time=0.15)
 
-play_from_sentence("hello world", tone_time=0.2)
+#play_from_sentence("hello world", tone_time=0.2)
 
 ser = None
 if len(arduinos) > 0:
@@ -145,18 +147,40 @@ if len(arduinos) > 0:
 else:
     print("Empty device list, will be playing over computer audio")
 
-time.sleep(0.2);
-user_input = ""
-while user_input.lower() != "exit":
-    user_input = input("Type a sentence, exit to leave\n")
-    
+
+print(sys.argv)
+if len(sys.argv) == 2:
+    print("Reading from file {}".format(sys.argv[0]))
+    lines = []
+    with open(sys.argv[1], "r", encoding="latin-1") as file:
+        for line in file:
+            lines.append(line)
+
     if ser:
-        serialized_srs = srs_to_serial(translate(user_input))
-        msg = ''.join(str(s) for s in serialized_srs)
-        print("sending \"{}\"".format(msg))
+        serialized_srs = srs_to_serial(translate(' '.join(lines), verbose=False))
+        msg = ' '.join(str(s) for s in serialized_srs)
         ser.write(msg.encode())
     else:
         play_from_sentence(user_input, 0.2)
+
+
+elif len(sys.argv) == 1:
+    time.sleep(0.2);
+    user_input = ""
+    while user_input.lower() != "exit":
+        user_input = input("Type a sentence, exit to leave\n")
+        
+        if ser:
+            serialized_srs = srs_to_serial(translate(user_input))
+            msg = ''.join(str(s) for s in serialized_srs)
+            print("sending \"{}\"".format(msg))
+            ser.write(msg.encode())
+        else:
+            play_from_sentence(user_input, 0.2)
+
+else:
+    print("USAGE: python srs_dict.py")
+    print("USAGE: python srs_dict.py \{path-to-file\}")
     
     
 
